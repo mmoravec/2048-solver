@@ -42,13 +42,14 @@ class GameManager:
         self.displayer = displayer
 
     def updateAlarm(self, currTime):
-        if currTime - self.prevTime > timeLimit + allowance:
-            self.over = True
-        else:
-            while time.clock() - self.prevTime < timeLimit + allowance:
-                pass
+        # if currTime - self.prevTime > timeLimit + allowance:
+        #     self.over = True
+        # else:
+        #     while time.clock() - self.prevTime < timeLimit + allowance:
+        #         pass
 
-            self.prevTime = time.clock()
+        #     self.prevTime = time.clock()
+        pass
 
     def start(self):
         for i in range(self.initTiles):
