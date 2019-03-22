@@ -3,21 +3,25 @@ from BaseAI_3 import BaseAI
 from Grid_3 import Grid
 import time
 import math
+import sys
 
-timeLimit = 0.4
+timeLimit = 0.2
 availNums = [2, 4]
 
 class PlayerAI(BaseAI):
 
     def __init__(self):
-        self.startTime = time.clock()
+        sys.setrecursionlimit(10000)
 
     def getMove(self, grid):
         self.startTime = time.clock()
         moves = grid.getAvailableMoves()
-        grid.lastMove = None
+        grid.lastMove = 0
         move = self.maximize(grid, -math.inf, math.inf)
-        return move[0].lastMove
+        if move[0] is not None and move[0].lastMove:
+            return move[0].lastMove
+        else:
+            return 1
 
     def maximize(self, grid, alpha, beta):
         #if time is up, return 
@@ -76,10 +80,13 @@ class PlayerAI(BaseAI):
 
     def getUtility(self, grid):
         sum = 0
-        twosAndFours = 0
+        sameTiles = {}
+        samesies = 0
         for x in range(grid.size):
             for y in range(grid.size):
-                if grid.map[x][y] is 2 or grid.map[x][y] is 4:
-                    twosAndFours = twosAndFours + 1
                 sum = sum + grid.map[x][y]
-        return  len(grid.getAvailableCells()) + math.log2(sum / (grid.size*grid.size)) - twosAndFours
+                if grid.map[x][y] in sameTiles:
+                    samesies = samesies + 1
+                else:
+                    sameTiles[grid.map[x][y]] = 1
+        return  len(grid.getAvailableCells())
