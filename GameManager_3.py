@@ -106,6 +106,7 @@ class GameManager:
 
             turn = 1 - turn
         print(maxTile)
+        return maxTile
 
     def isGameOver(self):
         return not self.grid.canMove()
@@ -123,16 +124,37 @@ class GameManager:
         self.grid.setCellValue(cell, tileValue)
 
 def main():
-    gameManager = GameManager()
-    playerAI  	= PlayerAI()
-    computerAI  = ComputerAI()
-    displayer 	= Displayer()
-
-    gameManager.setDisplayer(displayer)
-    gameManager.setPlayerAI(playerAI)
-    gameManager.setComputerAI(computerAI)
-
-    gameManager.start()
+    runs = 0
+    # emptyVal: 9.7, smoothWeight: -0.05, maxWeight: 0.5 - 1024
+    weights = {
+        'monoWeight': 0,
+        'emptyWeight': 2.7,
+        'smoothWeight': 0,
+        'maxWeight': 0,
+        'medianWeight': 0,
+        'bottomNumsWeight': 0
+    }
+    bestWeights = weights
+    bestRunMax = 0
+    bestWeight = 0
+    while runs < 40:
+        gameManager = GameManager()
+        playerAI  	= PlayerAI(weights)
+        computerAI  = ComputerAI()
+        displayer 	= Displayer()
+        gameManager.setDisplayer(displayer)
+        gameManager.setPlayerAI(playerAI)
+        gameManager.setComputerAI(computerAI)
+        maxTile = gameManager.start()
+        weights['emptyWeight'] = weights['emptyWeight'] + 0.5
+        if maxTile > bestRunMax:
+            bestWeight = weights['emptyWeight']
+            bestRunMax = maxTile
+        runs = runs + 1
+    print('Best run was: \n')
+    print(maxTile)
+    print('\n Best Weights were:')
+    print(bestWeights)
 
 if __name__ == '__main__':
     main()
